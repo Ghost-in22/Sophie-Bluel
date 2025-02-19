@@ -1,19 +1,20 @@
+let globalWorks;
+
 async function fetchWorks() {
   const response = await fetch("http://localhost:5678/api/works"); // API backend/works swagger
   if (!response.ok) {
     console.error("Erreur lors de la récupération de l'API"); // Message d'erreur dans la console si la reponse n'est pas true
     return []; // Tableau vide pour ne pas bloquer le code
   }
-  const works = await response.json(); // Passe la réponse en format JSON
-  return works;
+  globalWorks = await response.json(); // Passe la réponse en format JSON
 }
 
-async function displayWorks() {
-  const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable
+function displayWorks() {
+  // const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable
 
   const gallery = document.querySelector(".gallery"); // Sélectionne l'élément qui contient la galerie
 
-  works.forEach((work) => {
+  globalWorks.forEach((work) => {
     // Equivalent d'une boucle for et crée un élément HTML pour chaque work (work = works[i])
 
     const workElement = document.createElement("figure"); // Crée un élément figure
@@ -30,9 +31,10 @@ async function displayWorks() {
 
 // Récupère et nrenvoie les catégories uniques (avec "Tous" en premier)
 async function fetchCategories() {
-  const works = await fetchWorks(); //Appel la fonction pour récuperer les travaux au format json et les stocke dans une variable
-  const categoriesSet = new Set(works.map((work) => work.category.name)); // .map va parcourir le tableau works et crée un tableau contenant les "name" des "category" de chaque work, new Set() créé un objet qui contient des valeurs uniques (supprime les doublons)
-  return ["Tous", ...categoriesSet]; // Création d'un tableau avec "Tous" en premier, puis ...categoriesSet (opérateur spread) va "étaler" les éléments contenus dans Set
+  const response = await fetch("http://localhost:5678/api/categories"); //Appel la fonction pour récuperer les travaux au format json et les stocke dans une variable
+  const categoriesList = await response.json();
+  const categories = categoriesList.map((work) => work.name); // .map va parcourir le tableau works et crée un tableau contenant les "name" des "category" de chaque work, new Set() créé un objet qui contient des valeurs uniques (supprime les doublons)
+  return ["Tous", ...categories]; // Création d'un tableau avec "Tous" en premier, puis ...categoriesSet (opérateur spread) va "étaler" les éléments contenus dans Set
 }
 
 // Génère les boutons de filtre
@@ -51,18 +53,18 @@ async function displayCategories() {
 }
 
 // Filtre les travaux en fonction de la catégorie sélectionnée
-async function filterWorks(selectedCategory) {
+function filterWorks(selectedCategory) {
   // selectedCategory = à la catégorie clickée grâce à l'appel filterWorks(category)
-  const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable (comme à la ligne 12)
+  // const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable (comme à la ligne 12)
   const gallery = document.querySelector(".gallery"); // gallery = élément HTML qui contient la galerie
   gallery.innerHTML = ""; // Vide la gallerie pour ne pas afficher les travaux en double
 
   let filteredWorks; // Déclare une variable qui contiendra les travaux filtrés
   if (selectedCategory === "Tous") {
     //Si la catégorie sélectionnée est "Tous"
-    filteredWorks = works; // filteredWorks = la liste des travaux entière
+    filteredWorks = globalWorks; // filteredWorks = la liste des travaux entière
   } else {
-    filteredWorks = works.filter(
+    filteredWorks = globalWorks.filter(
       // .filter crée un nouveau tableau qui contient tous les éléments qui passent le test
       (work) => work.category.name === selectedCategory // Le test est : chaque work on vérifie si work.category.name est égal à la catégorie séléctionnée
     );
@@ -79,5 +81,11 @@ async function filterWorks(selectedCategory) {
   });
 }
 
-displayCategories();
-displayWorks(); // Appel la fonction qui ajoute les travaux dans le HTML
+async function runAppli() {
+  await fetchWorks();
+
+  displayCategories();
+  displayWorks(); // Appel la fonction qui ajoute les travaux dans le HTML
+}
+
+runAppli();
