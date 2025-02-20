@@ -45,7 +45,15 @@ async function displayCategories() {
     // Chaque élément du tableau categories (["Tous", ...categories])= une category
     const button = document.createElement("button"); // Créé un bouton à chaque élément
     button.textContent = category; // Met le nom de la catégorie comme texte sur le bouton (textContent = innerText pour les boutons)
-    button.addEventListener("click", () => filterWorks(category)); // Lorsque le bouton est clické, cela lance la fonction filterWorks avec en argument la catégorie
+    if (category === "Tous") {
+      button.classList.add("selected");
+    }
+    button.addEventListener("click", () => {
+      let allBtn = document.querySelectorAll(".filters button");
+      allBtn.forEach((btn) => btn.classList.remove("selected"));
+      button.classList.add("selected");
+      filterWorks(category);
+    }); // Lorsque le bouton est clické, cela lance la fonction filterWorks avec en argument la catégorie
     filtersContainer.appendChild(button); // Ajoute le bouton dans le conteneur de filtre filtersContainer
   });
 }
