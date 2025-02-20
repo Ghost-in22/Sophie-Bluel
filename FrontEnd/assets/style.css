@@ -377,3 +377,12 @@ footer nav ul li {
 button {
   all: unset;
 }
+
+/* --- MESSAGE D'ERREUR LOGIN --- */
+
+.error-text {
+  color: red;
+  padding: 20px 0px;
+  text-align: center;
+  font-weight: 600;
+}

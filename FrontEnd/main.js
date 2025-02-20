@@ -1,4 +1,4 @@
-let globalWorks;
+let globalWorks; // VAriable globale qui stocke les travaux
 
 async function fetchWorks() {
   const response = await fetch("http://localhost:5678/api/works"); // API backend/works swagger
@@ -10,12 +10,10 @@ async function fetchWorks() {
 }
 
 function displayWorks() {
-  // const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable
-
   const gallery = document.querySelector(".gallery"); // Sélectionne l'élément qui contient la galerie
 
   globalWorks.forEach((work) => {
-    // Equivalent d'une boucle for et crée un élément HTML pour chaque work (work = works[i])
+    // Equivalent d'une boucle for et crée un élément HTML pour chaque work (work = globalWorks[i])
 
     const workElement = document.createElement("figure"); // Crée un élément figure
 
@@ -29,12 +27,12 @@ function displayWorks() {
   });
 }
 
-// Récupère et nrenvoie les catégories uniques (avec "Tous" en premier)
+// Récupère et renvoie les catégories (avec "Tous" en premier)
 async function fetchCategories() {
-  const response = await fetch("http://localhost:5678/api/categories"); //Appel la fonction pour récuperer les travaux au format json et les stocke dans une variable
-  const categoriesList = await response.json();
-  const categories = categoriesList.map((work) => work.name); // .map va parcourir le tableau works et crée un tableau contenant les "name" des "category" de chaque work, new Set() créé un objet qui contient des valeurs uniques (supprime les doublons)
-  return ["Tous", ...categories]; // Création d'un tableau avec "Tous" en premier, puis ...categoriesSet (opérateur spread) va "étaler" les éléments contenus dans Set
+  const response = await fetch("http://localhost:5678/api/categories"); //Appel API pour récupérer les catégories (Swagger)
+  const categoriesList = await response.json(); // Passe la réponse de l'API au format json et est stockée dans categoriesList
+  const categories = categoriesList.map((work) => work.name); // .map va parcourir le tableau categoriesList et créer un nouveau tableau contenant les "name" de chaque categorie
+  return ["Tous", ...categories]; // Création d'un tableau avec "Tous" en premier, puis ...categories (opérateur spread) va "étaler" les éléments contenus dans categories
 }
 
 // Génère les boutons de filtre
@@ -44,9 +42,9 @@ async function displayCategories() {
   filtersContainer.innerHTML = ""; // Vide le conteneur si il y a déjà quelque chose (notamment avec du futur localStorage)
 
   categories.forEach((category) => {
-    // Chaque élément du tableau categories (["Tous", ...categoriesSet])= une category
+    // Chaque élément du tableau categories (["Tous", ...categories])= une category
     const button = document.createElement("button"); // Créé un bouton à chaque élément
-    button.textContent = category; // Met le nom de la catégorie comme texte sur le bouton
+    button.textContent = category; // Met le nom de la catégorie comme texte sur le bouton (textContent = innerText pour les boutons)
     button.addEventListener("click", () => filterWorks(category)); // Lorsque le bouton est clické, cela lance la fonction filterWorks avec en argument la catégorie
     filtersContainer.appendChild(button); // Ajoute le bouton dans le conteneur de filtre filtersContainer
   });
@@ -55,7 +53,6 @@ async function displayCategories() {
 // Filtre les travaux en fonction de la catégorie sélectionnée
 function filterWorks(selectedCategory) {
   // selectedCategory = à la catégorie clickée grâce à l'appel filterWorks(category)
-  // const works = await fetchWorks(); // Appel la fonction pour récupérer les travaux et les stocke dans une variable (comme à la ligne 12)
   const gallery = document.querySelector(".gallery"); // gallery = élément HTML qui contient la galerie
   gallery.innerHTML = ""; // Vide la gallerie pour ne pas afficher les travaux en double
 
@@ -82,6 +79,7 @@ function filterWorks(selectedCategory) {
 }
 
 async function runAppli() {
+  // Fonction pour gérer l'ordre de lancement des fonctions et les temps de réponse
   await fetchWorks();
 
   displayCategories();
