@@ -18,7 +18,7 @@ if (token) {
   editProject.appendChild(portfolioTitle);
   editProject.insertAdjacentHTML(
     "beforeend",
-    `<a href="#" target="blank"><i class="fa-regular fa-pen-to-square"></i><p>modifier</p></a>`
+    `<a href="#" id="edit-btn" target="_blank"><i class="fa-regular fa-pen-to-square"></i><p>modifier</p></a>`
   );
 
   const filtersContainer = document.querySelector(".filters");
