@@ -28,7 +28,7 @@ loginForm.addEventListener("submit", async (event) => {
     errorElement.innerHTML = ""; // Vide la div pour éviter d'avoir plusieurs messages d'erreur quand on click plusieurs fois sur le bouton
     const error = document.createElement("p"); // créé une balise p
     error.classList.add("error-text"); //On ajoute une classe à la balise p pour pouvoir appliquer du style sur elle (si on applique sur error.message le style s'applique sur une div vide)
-    error.innerText = "Email ou mot de passe incorrect"; //insere le texte d'erreur dans la balise p
+    error.innerText = "Erreur dans l’identifiant ou le mot de passe"; //insere le texte d'erreur dans la balise p
     errorElement.appendChild(error); // place error (la balise p avec son texte) à l'intérieur de errorElement (la div qu'on a récupéré)
   }
 });
